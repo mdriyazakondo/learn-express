@@ -1,8 +1,8 @@
 import express, { type Express, type Request, type Response } from "express";
 import cors from "cors";
 import { Pool } from "pg";
+import config from "./config";
 const app: Express = express();
-const port = 5000;
 
 // Middware
 app.use(express.json());
@@ -11,8 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // storage connection
 const pool = new Pool({
-  connectionString:
-    "postgresql://neondb_owner:npg_f7jlnBW5uiQa@ep-muddy-sunset-axhn0yag-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+  connectionString: config.connection_string,
 });
 
 const initDb = async () => {
@@ -181,6 +180,6 @@ app.delete("/api/v1/users/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`server is running port : http://localhost:${port}`);
+app.listen(config.port, () => {
+  console.log(`server is running port : http://localhost:${config.port}`);
 });
