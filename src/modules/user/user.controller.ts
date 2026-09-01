@@ -1,11 +1,10 @@
 import type { Request, Response } from "express";
 import { pool } from "../../db";
+import { userService } from "./user.service";
 
 const getAllUser = async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(`
-      SELECT * FROM users
-       `);
+    const result = await userService.userAllService();
 
     res.status(200).json({
       sueecss: true,
@@ -23,16 +22,11 @@ const getAllUser = async (req: Request, res: Response) => {
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const result = await pool.query(
-      `
-    SELECT * FROM users WHERE id=$1
-    `,
-      [id],
-    );
+    const result = await userService.singleUserService(id);
     res.status(201).json({
       success: true,
       message: "Sinle user Fetch success",
-      data: result.rows[0],
+      data: result.rows,
     });
   } catch (error) {
     res.status(404).json({
@@ -44,18 +38,11 @@ const getSingleUser = async (req: Request, res: Response) => {
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, age } = req.body;
-
-    const result = await pool.query(
-      `INSERT INTO users (name, email, password, age)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [name, email, password, age],
-    );
+    const result = await userService.createUserService(req.body);
 
     res.status(201).json({
       message: "Create user successfully",
-      data: result.rows[0],
+      data: result.rows,
     });
   } catch (error) {
     console.log(error);
@@ -69,31 +56,13 @@ const createUser = async (req: Request, res: Response) => {
 
 const updateUser = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-
-    const { name, email, password, age, is_active } = req.body;
-
-    const result = await pool.query(
-      `
-      UPDATE users
-      SET name =COALESCE($1, name),
-          email =COALESCE($2, email),
-          password = COALESCE($3, password),
-          age = COALESCE($4, age),
-          is_active = COALESCE($5, is_active)
-      WHERE id = $6
-      RETURNING *
-      `,
-      [name, email, password, age, is_active, id],
-    );
-
+    const result = await userService.updateUserService(req);
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
-
     res.status(200).json({
       success: true,
       message: "User updated successfully",
@@ -111,11 +80,7 @@ const updateUser = async (req: Request, res: Response) => {
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
-    const result = await pool.query(
-      `DELETE FROM users WHERE id = $1 RETURNING *`,
-      [id],
-    );
+    const result = await userService.deleteUserService(req);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
