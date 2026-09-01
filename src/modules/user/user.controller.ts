@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { pool } from "../../db";
+
 import { userService } from "./user.service";
 
 const getAllUser = async (req: Request, res: Response) => {
@@ -22,7 +22,7 @@ const getAllUser = async (req: Request, res: Response) => {
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const result = await userService.singleUserService(id);
+    const result = await userService.singleUserService(id as string);
     res.status(201).json({
       success: true,
       message: "Sinle user Fetch success",
@@ -56,7 +56,8 @@ const createUser = async (req: Request, res: Response) => {
 
 const updateUser = async (req: Request, res: Response) => {
   try {
-    const result = await userService.updateUserService(req);
+    const id = req.params.id;
+    const result = await userService.updateUserService(id as string, req.body);
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
@@ -80,7 +81,7 @@ const updateUser = async (req: Request, res: Response) => {
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
-    const result = await userService.deleteUserService(req);
+    const result = await userService.deleteUserService(req.params.id as string);
 
     if (result.rows.length === 0) {
       return res.status(404).json({

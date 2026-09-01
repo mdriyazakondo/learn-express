@@ -1,4 +1,5 @@
 import { pool } from "../../db";
+import type { IUser } from "./user.interface";
 
 const userAllService = async () => {
   const result = await pool.query(`
@@ -8,7 +9,7 @@ const userAllService = async () => {
   return result;
 };
 
-const singleUserService = async (payload: any) => {
+const singleUserService = async (payload: string) => {
   const result = await pool.query(
     `
     SELECT * FROM users WHERE id=$1
@@ -19,7 +20,7 @@ const singleUserService = async (payload: any) => {
   return result;
 };
 
-const createUserService = async (payload: any) => {
+const createUserService = async (payload: IUser) => {
   const { name, email, password, age } = payload;
   const result = await pool.query(
     `INSERT INTO users (name, email, password, age)
@@ -30,10 +31,8 @@ const createUserService = async (payload: any) => {
   return result;
 };
 
-const updateUserService = async (payload: any) => {
-  const id = payload.params.id;
-
-  const { name, email, password, age, is_active } = payload.body;
+const updateUserService = async (id: string, payload: IUser) => {
+  const { name, email, password, age, is_active } = payload;
 
   const result = await pool.query(
     `
@@ -52,11 +51,10 @@ const updateUserService = async (payload: any) => {
   return result;
 };
 
-const deleteUserService = async (payload: any) => {
-  const id = payload.params.id;
+const deleteUserService = async (payload: string) => {
   const result = await pool.query(
     `DELETE FROM users WHERE id = $1 RETURNING *`,
-    [id],
+    [payload],
   );
 
   return result;
