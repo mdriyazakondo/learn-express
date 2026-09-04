@@ -20,15 +20,28 @@ const singleProfileService = async (id: string) => {
 };
 
 const createProfileService = async (payload: any) => {
-  const [bio, user_id, address, phone, gender] = payload;
+  const { bio, user_id, address, phone, gender } = payload;
   const result = await pool.query(
-    `INSERT INTO profiles (bio, user_id, address, phone,gender)
+    `INSERT INTO profiles (bio, user_id, address, phone, gender)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
     [bio, user_id, address, phone, gender],
   );
   return result;
 };
+
+// const createProfileService = async (payload: any) => {
+//   const { bio, user_id, address, phone, gender } = payload;
+
+//   const result = await pool.query(
+//     `INSERT INTO profiles (bio, user_id, address, phone, gender)
+//      VALUES ($1, $2, $3, $4, $5)
+//      RETURNING *`,
+//     [bio, user_id, address, phone, gender],
+//   );
+
+//   return result;
+// };
 
 export const profileService = {
   allProfileService,
