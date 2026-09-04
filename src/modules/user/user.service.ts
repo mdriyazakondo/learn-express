@@ -28,9 +28,11 @@ const createUserService = async (payload: IUser) => {
   const result = await pool.query(
     `INSERT INTO users (name, email, password, age)
        VALUES ($1, $2, $3, $4)
-       RETURNING id, name, email, age,created_at, updated_at`,
+       RETURNING *`,
     [name, email, hashPassowrd, age],
   );
+
+  delete result.rows[0].password;
   return result;
 };
 
