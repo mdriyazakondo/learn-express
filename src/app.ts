@@ -4,13 +4,14 @@ import profileRoute from "./modules/profile/profile.route";
 import authRouter from "./modules/auth/login.route";
 import fs from "fs";
 import logger from "./middleware/logger";
+import cookieParser from "cookie-parser";
 const app: Express = express();
 
 // Middware
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 app.use(logger);
 
 app.use("/api/v1/users", userRouter);
