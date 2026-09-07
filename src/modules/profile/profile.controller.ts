@@ -1,17 +1,21 @@
 import type { Request, Response } from "express";
 import { profileService } from "./profile.service";
+import sendResponse from "../../utility/sendResponse";
 
 const getAllProfile = async (req: Request, res: Response) => {
   try {
     const result = await profileService.allProfileService();
-    res.status(201).json({
-      message: "Successfuly proflie fetch",
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Profiles fetched successfully",
       data: result.rows,
     });
   } catch (error) {
-    res.status(404).json({
+    sendResponse(res, {
+      statusCode: 404,
       success: false,
-      message: "Profile not found",
+      message: "Profiles not found",
       error: error,
     });
   }
@@ -23,12 +27,15 @@ const singleProfieController = async (req: Request, res: Response) => {
       req.params.id as string,
     );
 
-    res.status(201).json({
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
       message: "Single user fetch successfully",
       data: result.rows,
     });
   } catch (error) {
-    res.status(404).json({
+    sendResponse(res, {
+      statusCode: 404,
       success: false,
       message: "Profile not found",
       error: error,
@@ -39,12 +46,15 @@ const singleProfieController = async (req: Request, res: Response) => {
 const createProfile = async (req: Request, res: Response) => {
   try {
     const result = await profileService.createProfileService(req.body);
-    res.status(200).json({
-      message: "profile create Successfully",
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Profile created successfully",
       data: result.rows,
     });
   } catch (error) {
-    res.status(404).json({
+    sendResponse(res, {
+      statusCode: 404,
       success: false,
       message: "Profile not found",
       error: error,
