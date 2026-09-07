@@ -22,22 +22,28 @@ const singleUserService = async (payload: string) => {
 };
 
 const createUserService = async (payload: IUser) => {
-  const { name, email, password, age } = payload;
+  const { name, email, password, age, role } = payload;
 
-  const hashPassowrd = await bcrypt.hash(password, 10);
+  // Password hash
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   const result = await pool.query(
-    `INSERT INTO users (name, email, password, age)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-    [name, email, hashPassowrd, age],
+    `
+      INSERT INTO users (name, email, password, age, role)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `,
+    [name, email, hashedPassword, age, role],
   );
 
-  delete result.rows[0].password;
-  return result;
+  // Password response থেকে remove করা
+  const { password: _, ...user } = result.rows[0];
+
+  return user;
 };
 
 const updateUserService = async (id: string, payload: IUser) => {
-  const { name, email, password, age, is_active } = payload;
+  const { name, email, password, age, is_active, role } = payload;
 
   const result = await pool.query(
     `
@@ -46,11 +52,12 @@ const updateUserService = async (id: string, payload: IUser) => {
               email =COALESCE($2, email),
               password = COALESCE($3, password),
               age = COALESCE($4, age),
-              is_active = COALESCE($5, is_active)
-          WHERE id = $6
+              is_active = COALESCE($5, is_active),
+              role = COALESCE($6, role)
+          WHERE id = $7
           RETURNING *
           `,
-    [name, email, password, age, is_active, id],
+    [name, email, password, age, is_active, role, id],
   );
 
   return result;

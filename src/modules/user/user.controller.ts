@@ -42,18 +42,17 @@ const createUser = async (req: Request, res: Response) => {
 
     res.status(201).json({
       message: "Create user successfully",
-      data: result.rows,
+      data: result,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.log("Create User Error:", error);
 
     res.status(500).json({
       message: "Something went wrong",
-      error: error,
+      error: error.message,
     });
   }
 };
-
 const updateUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
