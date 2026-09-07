@@ -118,3 +118,7 @@ Method -> POST Time -> 1788773079806 Url -> /api/v1/auth/refresh-token
 Method -> POST Time -> 1788773313131 Url -> /api/v1/auth/refresh-token 
 Method -> POST Time -> 1788773322547 Url -> /api/v1/auth/refresh-token 
 Method -> POST Time -> 1788773792423 Url -> /api/v1/auth/refresh-token 
+Method -> POST Time -> 1788774400447 Url -> /api/v1/auth/refresh-token 
+Method -> GET Time -> 1788774414662 Url -> /api/v1/users 
+Method -> GET Time -> 1788774447460 Url -> /api/v1/users 
+Method -> GET Time -> 1788774471085 Url -> /api/v1/users 

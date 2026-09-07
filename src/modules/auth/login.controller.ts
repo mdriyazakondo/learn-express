@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service";
 import { ref } from "node:process";
+import sendResponse from "../../utility/sendResponse";
 
 const loginUser = async (req: Request, res: Response) => {
   try {
@@ -25,7 +26,8 @@ const loginUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    res.status(401).json({
+    sendResponse(res, {
+      statusCode: 401,
       success: false,
       message: "Invalid credentials",
     });
@@ -43,8 +45,16 @@ const refreshToken = async (req: Request, res: Response) => {
       message: "Refresh token successful",
       data: result,
     });
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Refresh token successful",
+      data: result,
+    });
   } catch (error) {
-    res.status(401).json({
+    sendResponse(res, {
+      statusCode: 401,
       success: false,
       message: "Invalid credentials",
     });

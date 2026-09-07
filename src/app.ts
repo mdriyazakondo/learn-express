@@ -2,9 +2,10 @@ import express, { type Express, type Request, type Response } from "express";
 import userRouter from "./modules/user/user.route";
 import profileRoute from "./modules/profile/profile.route";
 import authRouter from "./modules/auth/login.route";
-import fs from "fs";
+import cors from "cors";
 import logger from "./middleware/logger";
 import cookieParser from "cookie-parser";
+import globalErrorHandler from "./middleware/globalError";
 const app: Express = express();
 
 // Middware
@@ -13,6 +14,8 @@ app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(logger);
+
+app.use(cors({ origin: "http://localhost:3000" }));
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/profile", profileRoute);
@@ -24,5 +27,7 @@ app.get("/", (req: Request, res: Response) => {
     author: "Next Lavel",
   });
 });
+
+app.use(globalErrorHandler);
 
 export default app;
